@@ -46,37 +46,39 @@ class _RecommendationsTabState extends State<RecommendationsTab> with TickerProv
     super.dispose();
   }
 
-  Future<void> _cargarRecomendaciones() async {
-    if (_usuarioController.text.trim().isEmpty) {
-      setState(() {
-        _error = 'Por favor, ingresa un nombre de usuario';
-      });
-      return;
-    }
-
+Future<void> _cargarRecomendaciones() async {
+  if (_usuarioController.text.trim().isEmpty) {
     setState(() {
-      _isLoading = true;
-      _error = null;
-      _recomendaciones = [];
-      _gustos = [];
-      _nota = '';
+      _error = 'Por favor, ingresa un nombre de usuario';
     });
-
-    try {
-      final data = await ApiService.obtenerRecomendaciones(_usuarioController.text);
-      setState(() {
-        _recomendaciones = data['recomendaciones'];
-        _gustos = data['gustos'];
-        _nota = data['nota'];
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString().replaceFirst('Exception: ', '');
-        _isLoading = false;
-      });
-    }
+    return;
   }
+
+  setState(() {
+    _isLoading = true;
+    _error = null;
+    _recomendaciones = [];
+    _gustos = [];
+    _nota = '';
+  });
+
+  try {
+    final data = await ApiService.obtenerRecomendaciones(_usuarioController.text);
+    print('Datos recibidos de la API: $data'); 
+    setState(() {
+      _recomendaciones = data['recomendaciones'];
+      _gustos = data['gustos'];
+      _nota = data['nota'];
+      _isLoading = false;
+    });
+  } catch (e) {
+    print('Error al cargar recomendaciones: $e'); 
+    setState(() {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      _isLoading = false;
+    });
+  }
+}
 
   @override
   Widget build(BuildContext context) {
